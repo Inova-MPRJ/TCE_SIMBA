@@ -1,49 +1,43 @@
 import streamlit as st
 import pandas as pd
+import hmac
 
 df_empresas = pd.read_pickle(r'C:\workspace\navega\assets\df_empresa.pkl')
 df_empresas_valores = pd.read_pickle(r'C:\workspace\navega\assets\df_empresas_valores.pkl')
 df_maiores = pd.read_pickle(r'C:\workspace\navega\assets\df_maiores_reset.pkl')
 df_valor_total = pd.read_pickle(r'C:\workspace\navega\assets\df_valor_total.pkl')
 
-# Pagina de Teste Inicial
-
-# st.title("Estes são os dados do navega")
-
-# st.write('Todas as empresas/pessoas que receberam:')
-# st.dataframe(df_empresas)
-# st.write('Todas as transações:')
-# st.dataframe(df_empresas_valores)
-# st.write('As empresas/pessoas que mais receberam:')
-# st.dataframe(df_maiores)
-# st.bar_chart(df_maiores.set_index('Empresa'))
-
-# Pagina com filtros
-
-def consulta(nome):
-    df_valor = df_valor_total[df_valor_total['Empresa'] == nome]
-    df_transacoes = df_empresas_valores[df_empresas_valores['NOME_PESSOA_OD'] == nome]
-    return df_valor, df_transacoes
 
 
-opcoes = df_empresas['NOME_PESSOA_OD'].unique()
+st.session_state.status = st.session_state.get("status", "unverified")
+st.title("Entre com a senha")
 
-escolha = st.selectbox("Escolha alguem para investigar: ", opcoes)
 
-if escolha != None:
-    df_valor, df_transacoes = consulta(escolha)
-    num_linhas, _ = df_transacoes.shape
+def check_password():
+    if hmac.compare_digest(st.session_state.password, st.secrets.database.password):
+        st.session_state.status = "verified"
+    else:
+        st.session_state.status = "incorrect"
+    st.session_state.password = ""
 
-    col1, col2, col3 = st.columns(3)
+def login_prompt():
+    st.text_input("Enter password:", key="password", on_change=check_password)
+    if st.session_state.status == "incorrect":
+        st.warning("Incorrect password. Please try again.")
 
-    with col1:
-        st.metric("Transações", num_linhas)
+def logout():
+    st.session_state.status = "unverified"
 
-    with col2:
-        st.metric("Valor Total", df_valor['Valor'])
+def welcome():
+    st.success("Login successful.")
+    st.button("Log out", on_click=logout)
 
-    with col3:
-        st.metric(label="Contratos Vínculados", value="")
-    
-    st.dataframe(df_transacoes.reset_index(drop=True))
-    # Adicionar gráfico com as trasações baseada nas datas
+
+if st.session_state.status != "verified":
+    login_prompt()
+    st.stop()
+welcome()
+
+
+pg = st.navigation([st.Page("page_1.py"), st.Page("page_2.py")])
+pg.run()
