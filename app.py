@@ -3,15 +3,10 @@ import pandas as pd
 import hmac
 
 
-df_empresas = pd.read_pickle('assets/df_empresa.pkl')
-df_empresas_valores = pd.read_pickle('assets/df_empresas_valores.pkl')
-df_maiores = pd.read_pickle('assets/df_maiores_reset.pkl')
-df_valor_total = pd.read_pickle('assets/df_valor_total.pkl')
-
-
 
 st.session_state.status = st.session_state.get("status", "unverified")
-st.title("Entre com a senha")
+if st.session_state.status == "unverified":
+    st.title("Entre com a senha")
 
 
 def check_password():

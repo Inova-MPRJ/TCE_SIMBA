@@ -1,9 +1,9 @@
 import streamlit as st
 import pandas as pd
 
-df_empresas = pd.read_pickle(r'C:\workspace\navega\assets\df_empresa.pkl')
-df_empresas_valores = pd.read_pickle(r'C:\workspace\navega\assets\df_empresas_valores.pkl')
-df_maiores = pd.read_pickle(r'C:\workspace\navega\assets\df_maiores_reset.pkl')
+df_empresas = pd.read_pickle('assets/df_empresa.pkl')
+df_empresas_valores = pd.read_pickle('assets/df_empresas_valores.pkl')
+df_maiores = pd.read_pickle('assets/df_maiores_reset.pkl')
 
 # Pagina de Teste Inicial
 
