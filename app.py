@@ -3,10 +3,10 @@ import pandas as pd
 import hmac
 
 
-df_empresas = pd.read_pickle(r'assets\df_empresa.pkl')
-df_empresas_valores = pd.read_pickle(r'assets\df_empresas_valores.pkl')
-df_maiores = pd.read_pickle(r'assets\df_maiores_reset.pkl')
-df_valor_total = pd.read_pickle(r'assets\df_valor_total.pkl')
+df_empresas = pd.read_pickle('assets/df_empresa.pkl')
+df_empresas_valores = pd.read_pickle('assets/df_empresas_valores.pkl')
+df_maiores = pd.read_pickle('assets/df_maiores_reset.pkl')
+df_valor_total = pd.read_pickle('assets/df_valor_total.pkl')
 
 
 
