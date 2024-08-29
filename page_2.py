@@ -6,6 +6,7 @@ df_empresas = pd.read_pickle('assets/df_empresa.pkl')
 df_empresas_valores = pd.read_pickle('assets/df_empresas_valores.pkl')
 df_valor_total = pd.read_pickle('assets/df_valor_total.pkl')
 df_empresa_cnab = pd.read_pickle('assets/df_empresa_cnab.pkl')
+df_cnab = pd.read_pickle('assets/df_cnab.pkl')
 df_empresa_cnab_valor = pd.read_pickle('assets/df_empresa_cnab_valor.pkl')
 
 # Pagina com filtros
@@ -24,7 +25,7 @@ def consulta_cnab(cnab, nome):
 
 
 opcoes_empresa = df_empresas['NOME_PESSOA_OD'].unique()
-opcoes_cnab = df_empresa_cnab['CNAB'].unique()
+opcoes_cnab = df_cnab['CNAB'].unique()
 
 escolha_empresa = st.selectbox("Escolha alguem para investigar: ", opcoes_empresa)
 
@@ -48,6 +49,5 @@ if escolha_empresa != None:
     #st.dataframe(df_transacoes.reset_index(drop=True))
     if escolha_cnab != None:
         df_transacoes_cnab = consulta_cnab(escolha_cnab, escolha_empresa)
-        print(df_transacoes_cnab)
         st.dataframe(df_transacoes_cnab.reset_index(drop=True))
         # Adicionar gráfico com as trasações baseada nas datas
