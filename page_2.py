@@ -18,7 +18,8 @@ def consulta(nome):
 def consulta_cnab(cnab, nome):
 
     df_1 = df_empresa_cnab_valor[df_empresa_cnab_valor['CNAB'] == cnab]
-    df_transacao = df_1[df_1['NOME_PESSOA_OD'] == nome]
+    df_transacao = df_1[df_1['NOME_PESSOA_OD'] == nome].drop('NOME_PESSOA_OD', axis=1)
+
     return df_transacao
 
 
