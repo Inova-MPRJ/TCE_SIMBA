@@ -1,29 +1,14 @@
 import streamlit as st
 import pandas as pd
+from data import consulta, empresas, maiores, transacoes_cnab, valor_data, valor_total, total_cnab
 
 
-df_empresas = pd.read_pickle('assets/df_empresa.pkl')
-df_empresas_valores = pd.read_pickle('assets/df_empresas_valores.pkl')
-df_valor_total = pd.read_pickle('assets/df_valor_total.pkl')
-df_empresa_cnab = pd.read_pickle('assets/df_empresa_cnab.pkl')
+df = pd.read_pickle('assets/df_filtrado.pkl')
 df_cnab = pd.read_pickle('assets/df_cnab_desc.pkl')
-df_empresa_cnab_valor = pd.read_pickle('assets/df_empresa_cnab_valor.pkl')
 
 # Pagina com filtros
 
-def consulta(nome):
-    df_valor = df_valor_total[df_valor_total['Empresa'] == nome]
-    df_transacoes = df_empresas_valores[df_empresas_valores['NOME_PESSOA_OD'] == nome]
-    return df_valor, df_transacoes
-
-def consulta_cnab(cnab, nome):
-    df_1 = df_empresa_cnab_valor[df_empresa_cnab_valor['CNAB'] == int(cnab[:3])]
-    df_transacao = df_1[df_1['NOME_PESSOA_OD'] == nome].drop('NOME_PESSOA_OD', axis=1)
-
-    return df_transacao
-
-
-opcoes_empresa = df_empresas['NOME_PESSOA_OD'].unique()
+opcoes_empresa = df['NOME_PESSOA_OD'].unique()
 opcoes_cnab = df_cnab['descricao'].unique()
 
 escolha_empresa = st.selectbox("Escolha alguem para investigar: ", opcoes_empresa)
@@ -31,7 +16,9 @@ escolha_empresa = st.selectbox("Escolha alguem para investigar: ", opcoes_empres
 escolha_cnab = st.selectbox("Escolha um tipo de transação ", opcoes_cnab)
 
 if escolha_empresa != None:
-    df_valor, df_transacoes = consulta(escolha_empresa)
+    df_empresa = consulta(df,escolha_empresa)
+    df_transacoes = valor_data(df, escolha_empresa)
+
     num_linhas, _ = df_transacoes.shape
 
     col1, col2, col3 = st.columns(3)
@@ -40,13 +27,15 @@ if escolha_empresa != None:
         st.metric("Transações", num_linhas)
 
     with col2:
-        st.metric("Valor Total", df_valor['Valor'])
+        st.metric("Valor Total", valor_total(df_empresa, escolha_empresa)) # Pode ser passado o df geral ou o específico 
 
     with col3:
         st.metric(label="Contratos Vínculados", value="")
     
     #st.dataframe(df_transacoes.reset_index(drop=True))
     if escolha_cnab != None:
-        df_transacoes_cnab = consulta_cnab(escolha_cnab, escolha_empresa)
+        df_transacoes_cnab = transacoes_cnab(df, escolha_cnab, escolha_empresa) # Pode ser passado o df geral ou o específico 
         st.dataframe(df_transacoes_cnab.reset_index(drop=True))
+
+        st.metric('Total CNAB:', total_cnab(df, escolha_empresa, escolha_cnab))
         # Adicionar gráfico com as trasações baseada nas datas

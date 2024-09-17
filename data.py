@@ -1,12 +1,9 @@
 import pandas as pd
 
-dados = r'C:\workspace\navega\planilhas\ExtratoDetalhado.xlsx'
-tabela_cnab = r'C:\workspace\navega\planilhas\cnab-28062024.xlsx'
-
+# Retorna um dataframe com todas as infos da empresa passada
 def consulta(df, nome):
     new_df = df[df['NOME_PESSOA_OD'] == nome]
-    print(new_df)
-    return
+    return new_df
 
 # Lista de contas públicas presentes
 def empresas(df):
@@ -48,6 +45,15 @@ def maiores(df, *args):
     
     return df_f
 
+# Retorna um dataframe com as transações de um determinado CNAB de uma empresa
+def transacoes_cnab(df, cnab, nome):
+    df_empresas = df[['NOME_PESSOA_OD', 'VALOR_TRANSACAO', 'CNAB']]
+
+    df_1 = df_empresas[df_empresas['CNAB'] == int(cnab[:3])]
+    df_transacao = df_1[df_1['NOME_PESSOA_OD'] == nome].drop('NOME_PESSOA_OD', axis=1)
+    
+    return df_transacao
+
 # Valor por CNAB
 def valor_cnab(df):
     df_empresas = df[['NOME_PESSOA_OD', 'VALOR_TRANSACAO', 'CPF_CNPJ_OD', 'CNAB']]
@@ -78,37 +84,30 @@ def valor_cnab(df):
         if not cnab_encontrado:
             valores_empresas[nome_empresa].append([cnab_atual, valor_atual])
 
-
     return valores_empresas
+
+# Retorna o valor total do CNAB escolhido
+def total_cnab(df, empresa, cnab):
+    valores_empresas = valor_cnab(df)
+    for ind in valores_empresas[empresa]:
+        if (ind[0] == int(cnab[:3])):
+            break
+    return ind[1]
+
 
 # Gera um dataframe com as datas e valores recebidos pela pessoa/empresa
 def valor_data(df, empresa):
     df_filtrado = df[df['NOME_PESSOA_OD'].isin([empresa])]
     df_valor_data = df_filtrado[['DATA_LANCAMENTO', 'VALOR_TRANSACAO']]
-    print(df_valor_data)
-    return 
+    
+    return df_valor_data
 
 # Soma todos os valores recebidos pela pessoa/empresa (Retorna um Inteiro)
 def valor_total(df, empresa):
-    df_filtrado = df[df['NOME_PESSOA_OD'].isin([empresa])]
+    df_filtrado = df[df['NOME_PESSOA_OD'].isin([empresa])] 
     valor = 0
 
     for i, row in df_filtrado.iterrows():
         valor += row['VALOR_TRANSACAO']
 
     return valor
-
-
-df_cnab = pd.read_excel(tabela_cnab)
-df_cnab_desc = df_cnab[['descricao']].reset_index(drop=True)
-
-
-df_full = pd.read_excel(dados)
-
-df_filtrado = df_full[~df_full['OBSERVACAO'].isin(['DESBLOQ.ORDEM JUDICIAL','BLOQUEIO-ORDEM JUDICIAL', 'RECEBIMENTO DE TRIBUTO MUNICIPAL (ERJ TESOURO ESTADO CONTA UNICA)'])]
-
-
-# t = maiores(df_filtrado, 29111093000103, 29111622000179, 11835031000189, 1193480000117, 2098399000110, 42498675000152, 13499878000165)
-# valor_cnab(df_filtrado)
-# valor_data(df_filtrado, 'BANCO BRADESCO S/A')
-# valor_total(df_filtrado, 'DANIELLA CORTAT LOPES')
