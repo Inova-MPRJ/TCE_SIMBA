@@ -45,6 +45,22 @@ def maiores(df, *args):
     
     return df_f
 
+# Recebe o df com a empresa filtrada, retorna dataframe com valores ao longo dos anos
+def valor_ano(df):
+    # Filtra as colunas necessárias
+    df_data_valor = df[['VALOR_TRANSACAO', 'DATA_LANCAMENTO']]
+
+    # Converte a coluna 'DATA_LANCAMENTO' para o ano
+    df_data_valor['ANO'] = df_data_valor['DATA_LANCAMENTO'].dt.year
+
+    # Agrupa por ano e soma os valores das transações
+    ano_valores = df_data_valor.groupby('ANO')['VALOR_TRANSACAO'].sum()
+    ano_valores_df = ano_valores.reset_index()
+    ano_valores_df.columns = ['Ano', 'Valor Total']
+    print(ano_valores_df)
+    # Retorna o DataFrame com o índice definido como o ano
+    return ano_valores_df.set_index('Ano')
+
 # Retorna um dataframe com as transações de um determinado CNAB de uma empresa
 def transacoes_cnab(df, cnab, nome):
     df_empresas = df[['NOME_PESSOA_OD', 'VALOR_TRANSACAO', 'CNAB']]
@@ -91,8 +107,8 @@ def total_cnab(df, empresa, cnab):
     valores_empresas = valor_cnab(df)
     for ind in valores_empresas[empresa]:
         if (ind[0] == int(cnab[:3])):
-            break
-    return ind[1]
+            return ind[1]
+    return 0
 
 
 # Gera um dataframe com as datas e valores recebidos pela pessoa/empresa

@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from data import consulta, empresas, maiores, transacoes_cnab, valor_data, valor_total, total_cnab
+from data import consulta, transacoes_cnab, valor_data, valor_total, total_cnab, valor_ano
 
 
 df = pd.read_pickle('assets/df_filtrado.pkl')
@@ -13,7 +13,6 @@ opcoes_cnab = df_cnab['descricao'].unique()
 
 escolha_empresa = st.selectbox("Escolha alguem para investigar: ", opcoes_empresa)
 
-escolha_cnab = st.selectbox("Escolha um tipo de transação ", opcoes_cnab)
 
 if escolha_empresa != None:
     df_empresa = consulta(df,escolha_empresa)
@@ -31,11 +30,15 @@ if escolha_empresa != None:
 
     with col3:
         st.metric(label="Contratos Vínculados", value="")
-    
+
+    st.write('Evolução anual: ')
+    st.bar_chart(valor_ano(df_empresa))
+
+    escolha_cnab = st.selectbox("Escolha um tipo de transação ", opcoes_cnab)
     #st.dataframe(df_transacoes.reset_index(drop=True))
     if escolha_cnab != None:
         df_transacoes_cnab = transacoes_cnab(df, escolha_cnab, escolha_empresa) # Pode ser passado o df geral ou o específico 
         st.dataframe(df_transacoes_cnab.reset_index(drop=True))
 
         st.metric('Total CNAB:', total_cnab(df, escolha_empresa, escolha_cnab))
-        # Adicionar gráfico com as trasações baseada nas datas
+        
