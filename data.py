@@ -41,7 +41,7 @@ def maiores(df, *args):
     df_f = pd.DataFrame(list(valores_empresas.items()), columns=['Empresa', 'Valor'])
     df_f = df_f.nlargest(10, 'Valor')
 
-    print(df_f)
+    # print(df_f)
     
     return df_f
 
@@ -57,7 +57,7 @@ def valor_ano(df):
     ano_valores = df_data_valor.groupby('ANO')['VALOR_TRANSACAO'].sum()
     ano_valores_df = ano_valores.reset_index()
     ano_valores_df.columns = ['Ano', 'Valor Total']
-    print(ano_valores_df)
+    # print(ano_valores_df)
     # Retorna o DataFrame com o índice definido como o ano
     return ano_valores_df.set_index('Ano')
 
@@ -127,3 +127,45 @@ def valor_total(df, empresa):
         valor += row['VALOR_TRANSACAO']
 
     return valor
+
+# Valor das transações realizdas com cheque
+def cheque(df):
+    # print(df)
+    df_filtrado = df[df['CNAB'].isin([203, 201, 101])]
+    valor = 0
+    
+    for i, row in df_filtrado.iterrows():
+        valor += row['VALOR_TRANSACAO']
+
+    return valor
+
+# Retorna transações realizdas com cheque por ano
+def cheque_ano(df):
+    df_filtrado = df[df['CNAB'].isin([203, 201, 101])] 
+    df_data_valor = df_filtrado[['VALOR_TRANSACAO', 'DATA_LANCAMENTO']]
+
+    df_data_valor['ANO'] = df_data_valor['DATA_LANCAMENTO'].dt.year
+
+    ano_valores = df_data_valor.groupby('ANO')['VALOR_TRANSACAO'].sum()
+    ano_valores_df = ano_valores.reset_index()
+    ano_valores_df.columns = ['Ano', 'Valor Total']
+
+    return ano_valores_df.set_index('Ano')
+
+# Retorna valor das tarifas bancárias pagas pelo município
+def tarifa(df):   # Pode virar uma só função, muito parecida com a de CNAB
+    df_filtrado = df[df['CNAB'].isin([105])]
+
+    valor = 0
+    
+    for i, row in df_filtrado.iterrows():
+        valor += row['VALOR_TRANSACAO']
+
+    return valor
+
+# Retorna bancos que cobraram tarifas
+def tarifa_banco(df):
+    df_filtrado = df[df['CNAB'].isin([105])]
+    df_bancos = df_filtrado[['NOME_BANCO']].drop_duplicates()
+
+    return df_bancos
