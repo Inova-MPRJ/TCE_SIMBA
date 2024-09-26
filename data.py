@@ -1,5 +1,13 @@
 import pandas as pd
 
+# Retorna a soma da coluna VALOR_TRANSACAO do df passado
+def calcula_total(df):
+    valor = 0
+    for i, row in df.iterrows():
+        valor += row['VALOR_TRANSACAO']
+
+    return valor
+
 # Retorna um dataframe com todas as infos da empresa passada
 def consulta(df, nome):
     new_df = df[df['NOME_PESSOA_OD'] == nome]
@@ -22,6 +30,7 @@ def maiores(df, *args):
 
     # Filtra CNPJs/CPFs que não devem ser exibidos
     df_maiores_filtrado = df_maiores[~df_maiores['CPF_CNPJ_OD'].isin(cnpjs)]
+    df_maiores_filtrado = df_maiores_filtrado[~df_maiores_filtrado['NOME_PESSOA_OD'].isin(['BANCO BRADESCO S/A'])]
     # print(df_maiores_filtrado)
 
     # Cria uma lista para somar os valores através de For
@@ -121,23 +130,24 @@ def valor_data(df, empresa):
 # Soma todos os valores recebidos pela pessoa/empresa (Retorna um Inteiro)
 def valor_total(df, empresa):
     df_filtrado = df[df['NOME_PESSOA_OD'].isin([empresa])] 
-    valor = 0
 
-    for i, row in df_filtrado.iterrows():
-        valor += row['VALOR_TRANSACAO']
-
-    return valor
+    return calcula_total(df_filtrado)
 
 # Valor das transações realizdas com cheque
 def cheque(df):
     # print(df)
     df_filtrado = df[df['CNAB'].isin([203, 201, 101])]
-    valor = 0
-    
-    for i, row in df_filtrado.iterrows():
-        valor += row['VALOR_TRANSACAO']
 
-    return valor
+    return calcula_total(df_filtrado)
+
+# Retorna um dataframe com cheques do tipo 101
+def df_cheque(df):
+    df_filtrado = df[df['CNAB'].isin([101])]
+    return df_filtrado
+
+def consulta_cheque(df, obs):
+    df_filtrado = df[df['OBSERVACAO'] == obs]
+    return df_filtrado
 
 # Retorna transações realizdas com cheque por ano
 def cheque_ano(df):
@@ -156,12 +166,7 @@ def cheque_ano(df):
 def tarifa(df):   # Pode virar uma só função, muito parecida com a de CNAB
     df_filtrado = df[df['CNAB'].isin([105])]
 
-    valor = 0
-    
-    for i, row in df_filtrado.iterrows():
-        valor += row['VALOR_TRANSACAO']
-
-    return valor
+    return calcula_total(df_filtrado)
 
 # Retorna bancos que cobraram tarifas
 def tarifa_banco(df):
@@ -169,3 +174,22 @@ def tarifa_banco(df):
     df_bancos = df_filtrado[['NOME_BANCO']].drop_duplicates()
 
     return df_bancos
+
+# Retorna o valor das tranferências sem destinatário explícito
+def colunaOD_vazia(df):
+    df_filtrado = df[df['NOME_PESSOA_OD'].isna()]
+
+    return calcula_total(df_filtrado)
+
+# Retorna transações realizdas sem destinatário por ano
+def vazia_ano(df):
+    df_filtrado = df[df['NOME_PESSOA_OD'].isna()] 
+    df_data_valor = df_filtrado[['VALOR_TRANSACAO', 'DATA_LANCAMENTO']]
+
+    df_data_valor['ANO'] = df_data_valor['DATA_LANCAMENTO'].dt.year
+
+    ano_valores = df_data_valor.groupby('ANO')['VALOR_TRANSACAO'].sum()
+    ano_valores_df = ano_valores.reset_index()
+    ano_valores_df.columns = ['Ano', 'Valor Total']
+
+    return ano_valores_df.set_index('Ano')
