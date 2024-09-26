@@ -3,7 +3,7 @@ import pandas as pd
 import hmac
 
 
-LOGO = "assets\logo.svg"
+LOGO = "assets\logo.png"
 
 st.logo(LOGO)
 
