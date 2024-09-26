@@ -6,7 +6,7 @@ df_empresas_valores = pd.read_pickle('assets/df_empresas_valores.pkl')
 df_filtrado = pd.read_pickle('assets/df_filtrado.pkl')
 # Pagina de Teste Inicial
 
-st.title("Visão geral do município")
+st.title("Visão geral das Transações - Munícipio São Fidélis")
 
 st.write('Todas as empresas/pessoas que receberam:')
 st.dataframe(empresas(df_filtrado))

@@ -20,7 +20,7 @@ if escolha_empresa != None:
 
     num_linhas, _ = df_transacoes.shape
 
-    col1, col2, col3 = st.columns(3)
+    col1, col2 = st.columns(2)
 
     with col1:
         st.metric("Transações", num_linhas)
@@ -28,8 +28,6 @@ if escolha_empresa != None:
     with col2:
         st.metric("Valor Total", valor_total(df_empresa, escolha_empresa)) # Pode ser passado o df geral ou o específico 
 
-    with col3:
-        st.metric(label="Contratos Vínculados", value="")
 
     st.write('Evolução anual: ')
     st.bar_chart(valor_ano(df_empresa))
