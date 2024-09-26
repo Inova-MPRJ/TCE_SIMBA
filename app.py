@@ -5,7 +5,7 @@ import hmac
 
 LOGO = "assets\logo.png"
 
-st.logo(LOGO)
+st.logo(LOGO, icon_image=None)
 
 st.session_state.status = st.session_state.get("status", "unverified")
 if st.session_state.status == "unverified":
