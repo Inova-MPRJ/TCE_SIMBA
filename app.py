@@ -14,8 +14,8 @@ if st.session_state.status == "unverified":
 
 
 def check_password():
-    # if hmac.compare_digest(st.session_state.password, st.secrets.database.password): # Produção
-    if st.session_state.password == "senha":  # Sandbox
+    if hmac.compare_digest(st.session_state.password, st.secrets.database.password): # Produção
+    # if st.session_state.password == "senha":  # Sandbox
         st.session_state.status = "verified"
     else:
         st.session_state.status = "incorrect"
