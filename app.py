@@ -9,7 +9,7 @@ import hmac
 
 st.session_state.status = st.session_state.get("status", "unverified")
 if st.session_state.status == "unverified":
-    # st.image(LOGO)
+    # st.image(LOGO) 
     st.title("Análise de Contas Públicas")
 
 
