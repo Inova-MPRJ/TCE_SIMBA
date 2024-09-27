@@ -3,7 +3,7 @@ import pandas as pd
 import hmac
 
 
-LOGO = "images\logo.svg"
+LOGO = "https://4b78e3927324ab5e61334f9a5a714ad9.cdn.bubble.io/f1727446498078x837520776516588800/logo.svg?_gl=1*1lgejkq*_gcl_au*MTMxODk4NjUyOC4xNzI2MTUzNDMx*_ga*MTQzMzAyMDg5NC4xNzA5OTIwNjY4*_ga_BFPVR2DEE2*MTcyNzQ0MTE2Mi40MS4xLjE3Mjc0NDY0ODkuNTYuMC4w"
 
 st.logo(LOGO)
 
