@@ -3,13 +3,13 @@ import pandas as pd
 import hmac
 
 
-# LOGO = "assets\logo.png"
+LOGO = "images\logo.svg"
 
-# st.logo(LOGO, icon_image=None)
+st.logo(LOGO)
 
 st.session_state.status = st.session_state.get("status", "unverified")
 if st.session_state.status == "unverified":
-    # st.image(LOGO) 
+    st.image(LOGO) 
     st.title("Análise de Contas Públicas")
 
 

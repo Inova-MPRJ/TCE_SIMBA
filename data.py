@@ -1,8 +1,4 @@
 import pandas as pd
-import locale
-
-# Define o locale para português do Brasil
-locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
 # Retorna a soma da coluna VALOR_TRANSACAO do df passado
 def calcula_total(df):
@@ -10,7 +6,7 @@ def calcula_total(df):
     for i, row in df.iterrows():
         valor += row['VALOR_TRANSACAO']
 
-    return locale.currency(valor, grouping=True)
+    return f'R${valor:,.2f}'
 
 # Retorna um dataframe com todas as infos da empresa passada
 def consulta(df, nome):
@@ -120,7 +116,7 @@ def total_cnab(df, empresa, cnab):
     valores_empresas = valor_cnab(df)
     for ind in valores_empresas[empresa]:
         if (ind[0] == int(cnab[:3])):
-            return locale.currency(ind[1], grouping=True)
+            return f'R${ind[1]:,.2f}'
     return 0
 
 
