@@ -1,5 +1,12 @@
 import pandas as pd
 
+# Retorna df filtrado (Transações do tipo C) - Principal
+def filtra_df(df):
+    df_filtrado = df[~df['OBSERVACAO'].isin(['DESBLOQ.ORDEM JUDICIAL','BLOQUEIO-ORDEM JUDICIAL', 'RECEBIMENTO DE TRIBUTO MUNICIPAL (ERJ TESOURO ESTADO CONTA UNICA)'])]
+    # df_filtrado[~df_filtrado['NATUREZA_LANCAMENTO'].isin(['C'])]
+
+    return df_filtrado
+
 # Retorna a soma da coluna VALOR_TRANSACAO do df passado
 def calcula_total(df):
     valor = 0

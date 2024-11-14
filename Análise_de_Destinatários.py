@@ -3,20 +3,20 @@ import pandas as pd
 from data import consulta, transacoes_cnab, valor_data, valor_total, total_cnab, valor_ano
 
 
-df = pd.read_pickle('assets/df_filtrado.pkl')
+df = st.session_state['df']
 df_cnab = pd.read_pickle('assets/df_cnab_desc.pkl')
 
 # Pagina com filtros
 
-opcoes_empresa = df['NOME_PESSOA_OD'].unique()
+opcoes_empresa = st.session_state['df']['NOME_PESSOA_OD'].unique()
 opcoes_cnab = df_cnab['descricao'].unique()
 
 escolha_empresa = st.selectbox("Escolha alguem para investigar: ", opcoes_empresa)
 
 
 if escolha_empresa != None:
-    df_empresa = consulta(df,escolha_empresa)
-    df_transacoes = valor_data(df, escolha_empresa)
+    df_empresa = consulta(st.session_state['df'],escolha_empresa)
+    df_transacoes = valor_data(st.session_state['df'], escolha_empresa)
 
     num_linhas, _ = df_transacoes.shape
 
